@@ -2,7 +2,7 @@
   "name": "test",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://yakovlevdk.github.io/test-gpt-bot",
+  "homepage": "https://yakovlevdk.github.io/test-gpt-bot/",
   "type": "module",
   "scripts": {
     "dev": "vite",
