@@ -17,7 +17,6 @@ export const ChatItem: React.FC = () => {
   const dispatch = useDispatch();
   const messages = useSelector((state: RootState) => state.chat.chatMessages.data);
   const [newMessage, setNewMessage] = useState("");
-  const [isSending, setIsSending] = useState(false);
   const [selectedModel, setSelectedModel] = useState(options[0]);
   const fetchMessages = async () => {
     try {
@@ -60,7 +59,6 @@ export const ChatItem: React.FC = () => {
         const date = new Date().toISOString();
         const tempId = `temp_${Date.now()}`
           dispatch(addMessage({ content: newMessage, role: "user", created_at: date, id: tempId}));
-        setIsSending(true); 
         setNewMessage(""); 
         startEventStream({
           url: `https://bothubq.com/api/v2/chat/${id}/stream`,
@@ -79,7 +77,7 @@ export const ChatItem: React.FC = () => {
       } catch (error) {
         console.error("Ошибка при отправке сообщения:", error);
       } finally {
-        setIsSending(false); 
+console.log('finally');
       }
     }
   };
