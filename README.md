@@ -6,6 +6,7 @@
 2. npm install
 3. ВНИМАНИЕ! ЗАПУСК - npm run dev (нельзя через vite сделать npm build к сожалению, поэтому только так, надеюсь прощаемо)
 Ссылка vercel: https://test-gpt-bot-git-master-yakovlevdks-projects.vercel.app
+---------------------------
 Реализовано: 
 1. Авторизация
 2. Создание чата
