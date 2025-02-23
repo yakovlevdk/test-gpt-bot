@@ -4,7 +4,7 @@
 Для запуска необходимо: 
 1. cd test
 2. npm install
-3. npm run dev 
+3. ВНИМАНИЕ! ЗАПУСК - npm run dev (нельзя через vite сделать npm build к сожалению, поэтому только так, надеюсь прощаемо)
 Ссылка vercel: https://test-gpt-bot-git-master-yakovlevdks-projects.vercel.app
 Реализовано: 
 1. Авторизация
