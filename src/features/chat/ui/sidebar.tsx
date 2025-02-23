@@ -9,6 +9,8 @@ import {createChat} from '../api/createChat'
 import { setChatList,  setCurrentModel,  setSelectedChatId } from '../model/chatSlice'
 import { getChatList } from '../api/getChatList'
 import { deleteChat } from '../api/deleteChat'
+import { useState } from 'react'
+import { changeName } from '../api/changeName'
 export const SideBar = () => { 
 const chats = useSelector((state: RootState) => state.chat.chatList.data)
 const { onLogout } = useAuthActions()
@@ -21,6 +23,33 @@ const handleCreateChat = async() => {
                         dispatch(setChatList(chatList))
                     }
    return response;
+}
+const [editingChatId, setEditingChatId] = useState<string | null>(null)
+const [newChatName, setNewChatName] = useState<string>('')
+
+const handleEditChat = (id: string, name: string) => {
+    setEditingChatId(id)
+    setNewChatName(name)
+}
+
+const handleChangeChatName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewChatName(e.target.value)
+}
+
+const handleUpdateChatName = async (id: string) => {
+    if (newChatName.trim()) {
+        console.log(newChatName);
+        await changeName({id, name: newChatName})
+        const chatList = await getChatList()
+        if (chatList) dispatch(setChatList(chatList))
+    }
+    setEditingChatId(null)
+}
+
+const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>, id: string) => {
+    if (e.key === 'Enter') {
+        await handleUpdateChatName(id)
+    }
 }
 
 
@@ -50,20 +79,38 @@ const setChat = ({id, model_id} : {id: string, model_id: string}) => {
                  </button>
             </div>
             <div className={styles['chats-list']}>
+                <div className={styles['chats-items']}>
+
                 {chats.map((chat) => (
            
- <div className={styles.chat}>
+ <div className={styles.chat} key={chat.id}>
     <div key={chat.id} onClick={() => setChat({id: chat.id, model_id: chat.model_id})}>
  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M5.34268 14.0259L4.19971 14.9402C3.57558 15.4396 3.26336 15.6893 3.00073 15.6896C2.77233 15.6898 2.55634 15.586 2.41385 15.4075C2.25 15.2022 2.25 14.8027 2.25 14.0034V5.40015C2.25 4.56007 2.25 4.13972 2.41349 3.81885C2.5573 3.5366 2.7866 3.3073 3.06885 3.16349C3.38972 3 3.81007 3 4.65015 3H13.3501C14.1902 3 14.6101 3 14.9309 3.16349C15.2132 3.3073 15.4429 3.5366 15.5866 3.81885C15.75 4.1394 15.75 4.55924 15.75 5.39768V11.1027C15.75 11.9411 15.75 12.3604 15.5866 12.6809C15.4429 12.9631 15.2132 13.1929 14.931 13.3366C14.6105 13.5 14.1911 13.5 13.3527 13.5H6.84192C6.52989 13.5 6.37372 13.5 6.22449 13.5306C6.09209 13.5578 5.96412 13.6026 5.84376 13.6641C5.70862 13.7331 5.58723 13.8302 5.34542 14.0236L5.34268 14.0259Z" stroke="#616D8D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<span>{chat.name || 'Без названия'}</span>
+{/* <span>{chat.name || 'Без названия'}</span> */}
+{editingChatId === chat.id ? (
+                <input 
+                    type="text" 
+                    className={styles['name-input']}
+                    value={newChatName} 
+                    onChange={handleChangeChatName} 
+                    onBlur={() => handleUpdateChatName(chat.id)} 
+                    onKeyDown={(e) => handleKeyDown(e, chat.id)}
+                    autoFocus
+                />
+            ) : (
+                <span onDoubleClick={() => handleEditChat(chat.id, chat.name || 'Без названия')}>
+                    {chat.name || 'Без названия'}
+                </span>
+            )}
     </div>
 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => handleDeleteChat(chat.id)}>
 <path d="M15 2.33333H12L11.1429 1.5H6.85714L6 2.33333H3V4H15M3.85714 14.8333C3.85714 15.2754 4.03775 15.6993 4.35925 16.0118C4.68074 16.3244 5.11677 16.5 5.57143 16.5H12.4286C12.8832 16.5 13.3193 16.3244 13.6408 16.0118C13.9622 15.6993 14.1429 15.2754 14.1429 14.8333V4.83333H3.85714V14.8333Z" fill="#616D8D"/>
 </svg>
  </div>
                 ))}
+                </div>
 <div className={styles['aside-user-bar']}>
 <svg width="50" height="44" viewBox="0 0 50 44" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_1_21678)">

@@ -20,7 +20,6 @@ export const Chat = () => {
                 console.error("Ошибка при получении списка чатов:", error);
             }
         };
-        
         getChats();
     }, []);
 
